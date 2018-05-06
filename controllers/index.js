@@ -2,6 +2,9 @@
 
 //首页的
 module.exports.showIndex = (req,res)=>{
-    res.send('首页');
+   // res.send('首页');
+   res.render('index.html');
 }
+
+
 

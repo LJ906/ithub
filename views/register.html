@@ -29,27 +29,32 @@
         <label for="password">密码</label>
         <input type="password" class="form-control" id="password" name="password" placeholder="Password">
       </div>
-      <button type="button" class="btn btn-success btn-block">注册</button>
+      <button type="submit" class="btn btn-success btn-block">注册</button>
     </form>
     <div class="message">
       <p>已有账号? <a href="/login">点击登录</a>.</p>
     </div>
   </div>
   <script src="/node_modules/jquery/dist/jquery.js"></script>
+  <!-- //引入表单验证js文件 -->
+  <script src="../public/lib/bootstrap-validator/js/bootstrapValidator.min.js"></script>
+  <!-- 引入自己写的注册登录index.js文件 -->
+  <script src="../public/js/index.js"></script>
+  
   <script>
-    $('#register_form').on('click', function (e) {
-      e.preventDefault()
-      var formData = $(this).serialize()
-      $.ajax({
-        url: '/register',
-        type: 'post',
-        data: formData,
-        dataType: 'json',
-        success: function (data) {
-          console.log(data)
-        }
-      })
-    })
+    // $('#register_form').on('click', function (e) {
+    //   e.preventDefault()
+    //   var formData = $(this).serialize()
+    //   $.ajax({
+    //     url: '/register',
+    //     type: 'post',
+    //     data: formData,
+    //     dataType: 'json',
+    //     success: function (data) {
+    //       console.log(data)
+    //     }
+    //   })
+    // })
   </script>
 </body>
 
