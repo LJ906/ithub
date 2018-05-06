@@ -7,12 +7,13 @@ const template= require('art-template');
 //引入body-parser
 const bodyParser = require('body-parser');
 
-//2.创建web服务
+//2.创建web服务 
 const app = express();
 
 //配置模板 在这个页面配置也行
 app.engine('html', require('express-art-template'));
-
+// 配置body-parser post请求获取请求的数据
+app.use(bodyParser.urlencoded({ extended: true }));
 //静态资源 2个
 app.use('/node_modules', express.static('node_modules'));
 app.use('/public', express.static('public'));
