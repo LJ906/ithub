@@ -33,7 +33,7 @@ module.exports.handleSignup = (req, res) => {
   let selectNickname = "select * from users where email = '" + nickname +"'";
   // let selectNickname = 'select * from users where nickname=? ',req.body.nickname;
 
-  console.log(selectSql);
+  //console.log(selectSql);
   connection.query(selectSql, function (error, results, fields) {
     if(error){
       return res.send(error);

@@ -80,6 +80,17 @@ $(function(){
             data: $form.serialize(),   
             success: function(data){
                 console.log(data);
+                // 根据获取到的状态吗
+                if (data.code == 1002) {
+                  location.href = '/';
+                }
+                if(data.code == 10001){
+                  alert(data.message);
+                }
+                if(data.code == 1000){
+                  alert(data.message);
+                }
+
             }
             
         })
