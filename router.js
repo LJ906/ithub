@@ -12,16 +12,30 @@ const router = express.Router();
 //处理响应函数index.js user.js
 let index =require('./controllers/index');
 let user =require('./controllers/user');
+let topicCtrl = require('./controllers/topic');
 
 //首页模块
 router.get('/', index.showIndex);
-//用户模块 包括请求get ,post两种方式
-//signin 登录  signup注册
+
+//用户模块   包括请求get ,post两种方式//signin 登录  signup注册
 router.get('/signin', user.showSignin);   
 router.post('/signin', user.handleSignin);
 router.get('/signup', user.showSignup);
-router.post('/signup', user.handleSignup); //登录时
+router.post('/signup', user.handleSignup);   //登录时
 router.post('/signout', user.handleSignout);
+
+
+//话题模块
+
+router
+  .get('/topic/create', topicCtrl.showCreate)
+  .post('/topic/create', topicCtrl.handleCreate)
+  .get('/topic/show', topicCtrl.showTopic)
+  .get('/topic/edit', topicCtrl.showEdit)
+  .post('/topic/edit', topicCtrl.handleEdit)
+  .get('/topic/delete', topicCtrl.handleDelete)
+
+
 
 //4. 输出路由等等个
 module.exports = router;
