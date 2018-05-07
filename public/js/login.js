@@ -56,17 +56,17 @@ $(function(){
         url: '/signin',  //登录signin
         data: $form.serialize(),   
         success: function(data){
-            console.log(data);
+            //console.log(data);
             // 根据获取到的状态吗
-            // if (data.code == 1002) {
-            //   location.href = '/';
-            // }
-            // if(data.code == 10001){
-            //   alert(data.message);
-            // }
-            // if(data.code == 1000){
-            //   alert(data.message);
-            // }
+            if (data.code == 10004) {   //登录成功
+              location.href = '/';
+            }
+            if(data.code == 10005){
+              alert(data.message);    
+            }
+            if(data.code == 10003){
+              alert(data.message);
+            }
 
         }
         
@@ -75,3 +75,5 @@ $(function(){
 
 
 })
+
+//有时间可以改善一下alert 成mui.alert 等。。
