@@ -81,7 +81,7 @@ module.exports.handleSignup = (req, res) => {
       }
 
       //如果没有错误，则提示注册成功
-      console.log(results); //返回一个成功的对象，
+     // console.log(results); //返回一个成功的对象，
       if(results.insertId){ //如果insertId存在证明成功了
           res.send({
             code: 1002,

@@ -1,3 +1,5 @@
+//注册页面的js
+
 //注册页面表单验证 -使用bootstrap-validator插件 基于jquery
 $(function(){
     $('#register_form').bootstrapValidator({
