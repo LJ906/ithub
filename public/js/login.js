@@ -17,10 +17,13 @@ $(function(){
             email: {
               validators: {
                 notEmpty: {
-                  message: '邮件不能为空'
+                  message: '邮箱不能为空'
                 },
                 emailAddress: {
                   message: '请输入正确的邮件地址如：123@qq.com'
+                },
+                callback : {
+                  message: '邮箱不存在'
                 }
               }
             },
@@ -35,6 +38,9 @@ $(function(){
                   max: 30,
                   message: '密码长度必须在3到30之间'
                 },
+                callback : {
+                  message: '密码错误'
+                }
                
               }
             }
@@ -57,15 +63,24 @@ $(function(){
         data: $form.serialize(),   
         success: function(data){
             //console.log(data);
-            // 根据获取到的状态吗
+            // 登录成功后 检测是否存在returnUrl 
             if (data.code == 10004) {   //登录成功
+              //从url中获取returnUrl
+              var url = new URLSearchParams(location.search)
+              var returnUrl = url.get('returnUrl')
+
+              // if()
               location.href = '/';
             }
-            if(data.code == 10005){
-              alert(data.message);    
+            if(data.code == 10005){  //密码错误
+              // alert(data.message);
+              // 更新文件域提示                           
+              bv.updateStatus('password', 'INVALID', 'callback'); 
+
             }
-            if(data.code == 10003){
-              alert(data.message);
+            if(data.code == 10003){   //用户名不正确
+             // alert(data.message);
+              bv.updateStatus('email', 'INVALID', 'callback'); 
             }
 
         }

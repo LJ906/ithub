@@ -6,9 +6,21 @@ const router = require('./router');
 const template= require('art-template');
 //引入body-parser
 const bodyParser = require('body-parser');
-
+//引入session包
+let session = require('express-session');
+// console.log(session);
+//配置session
 //2.创建web服务 
 const app = express();
+
+app.use(session({
+    secret: 'ithub',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+  }))
+
+
 
 //配置模板 在这个页面配置也行
 app.engine('html', require('express-art-template'));

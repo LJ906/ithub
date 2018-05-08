@@ -19,6 +19,9 @@ $(function(){
                 },
                 emailAddress: {
                   message: '请输入正确的邮件地址如：123@qq.com'
+                },
+                callback: {
+                  message: '邮箱已被注册'
                 }
               }
             },
@@ -32,6 +35,9 @@ $(function(){
                   min: 2,
                   max: 30,
                   message: '昵称的长度必须在2到30之间'
+                },
+                callback: {
+                  message: "昵称已被占用"
                 }
               }
             },
@@ -54,18 +60,7 @@ $(function(){
           }
     })
 
-    //错误验证
-    // .on('error.form.bv', function(e) {
-    //     console.log('error');
 
-    //     // Active the panel element containing the first invalid element
-    //     var $form         = $(e.target),
-    //         validator     = $form.data('bootstrapValidator'),
-    //         $invalidField = validator.getInvalidFields().eq(0),
-    //         $collapse     = $invalidField.parents('.collapse');
-
-    //     $collapse.collapse('show');
-    // });
 //正确验证， 如果正确则发送ajax请求，并发送数据
     .on('success.form.bv', function(e){
         //取消submit的默认事件
@@ -86,11 +81,17 @@ $(function(){
                 if (data.code == 1002) {
                   location.href = '/';
                 }
-                if(data.code == 10001){
-                  alert(data.message);
+                if(data.code == 10001){ // 昵称被占用
+
+                  // alert(data.message);
+                  // 用文件域更新提示
+                  bv.updateStatus('nickname', 'INVALID', 'callback');
+
                 }
-                if(data.code == 1000){
-                  alert(data.message);
+                if(data.code == 1000){   //邮箱已被占用
+                  // alert(data.message);
+                  // 用文件域更新提示
+                  bv.updateStatus('email', 'INVALID', 'callback');
                 }
 
             }

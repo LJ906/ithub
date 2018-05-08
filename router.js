@@ -12,7 +12,7 @@ const router = express.Router();
 //处理响应函数index.js user.js
 let index =require('./controllers/index');
 let user =require('./controllers/user');
-let topicCtrl = require('./controllers/topic');
+let topic = require('./controllers/topic');
 
 //首页模块
 router.get('/', index.showIndex);
@@ -22,18 +22,19 @@ router.get('/signin', user.showSignin);
 router.post('/signin', user.handleSignin);
 router.get('/signup', user.showSignup);
 router.post('/signup', user.handleSignup);   //登录时
-router.post('/signout', user.handleSignout);
+router.post('/logout', user.handleLogout);
+router.get('/logout', user.handleLogout);
 
 
 //话题模块
 
 router
-  .get('/topic/create', topicCtrl.showCreate)
-  .post('/topic/create', topicCtrl.handleCreate)
-  .get('/topic/show', topicCtrl.showTopic)
-  .get('/topic/edit', topicCtrl.showEdit)
-  .post('/topic/edit', topicCtrl.handleEdit)
-  .get('/topic/delete', topicCtrl.handleDelete)
+  .get('/topic/create', topic.showCreate)       //展示创建话题页面
+  .post('/topic/create', topic.handleCreate)
+  .get('/topic/show', topic.showTopic)
+  .get('/topic/edit', topic.showEdit)
+  .post('/topic/edit', topic.handleEdit)
+  .get('/topic/delete', topic.handleDelete)
 
 
 

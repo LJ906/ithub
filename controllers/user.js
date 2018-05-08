@@ -8,26 +8,30 @@ const moment = require('moment');
 //引入md5的包
 const md5 = require('md5');
 //用户模块
+
+//显示登录页面
 module.exports.showSignin = (req, res) => {
   // res.send('渲染登录页');
   res.render('login.html');
 }
 
-//登录页面
+// 处理登录页面
 module.exports.handleSignin = (req, res) => {
   //接收post方式请求的数据用户名和密码 name password
   let loginUserEmail = req.body.email;
-  let loginUserPwd = req.body.password;
+  let loginUserPwd = md5(md5(req.body.password));
 
   //链接数据库 验证用户名密码
   let checkLoginSql = "select * from users where email = '" + loginUserEmail + "'";
   connection.query(checkLoginSql, (error, results) => {
     if (error) {
-      console.log(error);
-      return res.send(error);
-
+      return res.render('error.html', {
+        code: error.code,
+        message: error.message
+      })
     }
-    console.log(results);  //数组
+
+    // console.log(results);  //数组
 
     //[ RowDataPacket {
     // id: 24,
@@ -42,55 +46,56 @@ module.exports.handleSignin = (req, res) => {
     // createdAt: 2018-05-06T13:32:47.000Z,
     // updatedAt: 2018-05-06T13:32:49.000Z } ]
 
-    if (results[0]) {  //如根据email 查询的数据不为空，验证密码
-
-      //验证密码
-      if (results[0].password == loginUserPwd) {
-        res.send({
-          code: 10004,    
-          message: '登录成功'
-        })
-      } else { 
-        res.send({
-          code: 10005,   
-          message: '密码错误'
-        })
-      }
-
-    } else {
-      return res.send({
-        code: 10003,    //用户名不正确
-        message: "您输入的用户名不存在"
+    //如果查询到的邮箱为空 则邮箱不存在
+    if (!results[0]) {
+      return res.status(200).send({
+        code: 10003,      //用户名不正确
+        message: "您输入的邮箱不存在"
       })
     }
+
+    //如根据email 查询的数据不为空，验证密码
+
+    if (results[0].password == loginUserPwd) {
+      //登录成功记录session: 
+      req.session.user = results[0];
+
+      res.send({
+        code: 10004,
+        message: '登录成功'
+      })
+    } else {
+      res.status(200).send({
+        code: 10005,
+        message: '密码错误'
+      })
+    }
+
 
   })
 }
 
+
+//展示注册页面
 module.exports.showSignup = (req, res) => {
-  // res.render('渲染注册页')
-  res.render('register.html')
+  res.render('register.html');
 }
 
-//处理/signup标识符的post请求
+//处理注册页面 （查 session）
 module.exports.handleSignup = (req, res) => {
-
   //接收表单post请求的数据 body-parser方法
   let email = req.body.email;
   let nickname = req.body.nickname;
   //链接数据库，检验数据库是否存在相同的数据
   let selectSql = "select * from users where email = '" + email + "'";
   let selectNickname = "select * from users where email = '" + nickname + "'";
-  // let selectNickname = 'select * from users where nickname=? ',req.body.nickname;
 
-  //console.log(selectSql);
   connection.query(selectSql, function (error, results, fields) {
     if (error) {
       return res.send(error);
     }
     //console.log(results);  //results是一个数组
     //如果能够筛选到东西则，证明存在同名的数据则
-    // 返回一个对象给前端提示用户名已存在
     if (results[0]) { //如果存在第一个就是有数据
       return res.status(200).send({
         code: 1000,          //错误码
@@ -133,20 +138,26 @@ module.exports.handleSignup = (req, res) => {
       //如果没有错误，则提示注册成功
       // console.log(results); //返回一个成功的对象，
       if (results.insertId) { //如果insertId存在证明成功了
-        res.send({
+        // 记录session
+        req.session.user = newUser;
+        res.status(200).send({
           code: 1002,
           message: '注册成功'
         })
       }
     })
 
-
-
-
   });
 
 }
 
-module.exports.handleSignout = (req, res) => {
-  res.send('处理退出页');
+
+
+module.exports.handleLogout = (req, res) => {
+  // res.send('处理退出页');
+
+  // 清除session
+  // delete req.session.user
+  // 页面跳转到登录页面
+  res.redirect('./signin');
 }
