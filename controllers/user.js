@@ -59,7 +59,7 @@ module.exports.handleSignin = (req, res) => {
     if (results[0].password == loginUserPwd) {
       //登录成功记录session: 
       req.session.user = results[0];
-
+      //console.log(req.session.user);
       res.send({
         code: 10004,
         message: '登录成功'
@@ -81,7 +81,7 @@ module.exports.showSignup = (req, res) => {
   res.render('register.html');
 }
 
-//处理注册页面 （查 session）
+//处理注册页面 （ session）
 module.exports.handleSignup = (req, res) => {
   //接收表单post请求的数据 body-parser方法
   let email = req.body.email;
@@ -157,7 +157,7 @@ module.exports.handleLogout = (req, res) => {
   // res.send('处理退出页');
 
   // 清除session
-  // delete req.session.user
+  delete req.session.user
   // 页面跳转到登录页面
   res.redirect('./signin');
 }

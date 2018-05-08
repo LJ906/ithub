@@ -9,6 +9,16 @@
 <body>
   {{include './_includes/header.html'}}
   <section class="container">
+<!-- 添加分类展示 分享 问 答 -->
+      <ul>
+          {{each categories}}
+          <li>
+            <a href="JavaScript:;">{{$value.name}}</a>
+          </li>
+          {{/each}}
+        </ul>
+
+
   <ul class="media-list">
    
     <li class="media">

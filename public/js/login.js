@@ -66,11 +66,16 @@ $(function(){
             // 登录成功后 检测是否存在returnUrl 
             if (data.code == 10004) {   //登录成功
               //从url中获取returnUrl
-              var url = new URLSearchParams(location.search)
-              var returnUrl = url.get('returnUrl')
-
-              // if()
-              location.href = '/';
+              var url = new URLSearchParams(location.search);
+              var returnUrl = url.get('returnUrl');
+              console.log(returnUrl);
+              if(returnUrl) {
+                location.href = returnUrl;
+                 console.log(returnUrl);
+              }else {
+                location.href = '/';
+              }
+              
             }
             if(data.code == 10005){  //密码错误
               // alert(data.message);

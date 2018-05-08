@@ -6,6 +6,12 @@ module.exports = {
         user: 'root',
         password: '123',
         database: 'ithub'
-    }
+    },
+    // db2: {
+    //     host: '192.168.3.6',
+    //     user: 'root',
+    //     password: '123',
+    //     database: 'ithub'
+    // }
 
 }

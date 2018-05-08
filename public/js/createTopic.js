@@ -1,73 +1,65 @@
 //创建新话题页面
-let moment
+
 
 $(function () {
     //点击提交按钮， 获取表单中的数据
-    $('.btn-default').on('click', function (e) {
-        e.preventDefault();  //阻止submit的默认事件
+    $('#createTopic').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',//显示验证成功或者失败时的一个小图标
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        //文件域/*验证：规则*/
+        fields: {
+            //文件域的name值，
+            title: {
+              validators: {
+                notEmpty: {
+                  message: '标题不能为空'
+                },
+               
+              }
+            },
+           
+            content: {
+              validators: {
+                notEmpty: {
+                  message: '内容不能为空'
+                },
+                
+               
+              }
+            }
+          }
+    })
 
-        let category = $('.form-control option:selected').val();
-        let title = $('#title').val();
-        let content = $('#newcontent').val();
-        // console.log(category);
-        // console.log(title);
-        // console.log(content);
+//正确验证， 如果正确则发送ajax请求，并发送数据
+  .on('success.form.bv', function(e){
+    //取消submit的默认事件
+    e.preventDefault();
+    //创建form的实例对象
+    var $form = $(e.target);
+    //创建bootstrapValidator 的实例对象
+    var bv = $form.data('bootstrapValidator');
 
-        if (category == '') {
-            alert('请选择分类模块');
-            return;
-        }
-        if (title == '') {
-            alert('标题不能为空');
-            return;
-        }
-        if (content == '') {
-            alert('内容不能为空');
-            return;
-        }
-        //分类categoryId 
-        let categoryId;  //外面声明
-        switch (category) {
-            case '分享':
-                categoryId = 1;
-                break;
-            case '问答':
-                categoryId = 2;
-                break;
-            case '招聘':
-                categoryId = 3;
-                break;
-            case '客户端测试':
-                categoryId = 4;
-                break;
-        }
-
-
-      //  console.log(categoryId);
-        let newtopicObj = {
-            title: title,
-            content: content,
-            categoryId:categoryId,
-        }
+    console.log($form.serialize());
        // console.log(newtopicObj);
         $.ajax({
             url: '/topic/create',
-            data: newtopicObj,
+            data: $form.serialize(),
             type: 'post',
-            dataType: 'text',
+            //dataType: 'text',
             success: function (data) {
                 console.log(data);
                 if(data.code ==1006){
-                    alert(data.message);
+                    //alert(data.message);
+                    //成功后跳转到 展示文章页面show
+                    location.href = "/topic/show?id="+ data.insertId;
                 }else {
                     alert("提交失败");   //要写吗
                 }
             }
 
         })
-
-
-
     })
-
 })

@@ -7,18 +7,12 @@ const template= require('art-template');
 //引入body-parser
 const bodyParser = require('body-parser');
 //引入session包
-let session = require('express-session');
+const session = require('express-session');
 // console.log(session);
 //配置session
 //2.创建web服务 
 const app = express();
 
-app.use(session({
-    secret: 'ithub',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
-  }))
 
 
 
@@ -30,10 +24,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/node_modules', express.static('node_modules'));
 app.use('/public', express.static('public'));
 
+app.use(session({
+    secret: 'itcast',
+    resave: false,
+    saveUninitialized: true,
+    // cookie: { secure: true }
+  }))
+
 //3.监听访问请求标识符，绑定函数
 // 由路由监听标识符并给予响应 所有的标识符都在路由池子中
 //把路由挂在到app上
 app.use(router);
+
+
+
 
 
 //端口监听
