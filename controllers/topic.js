@@ -15,7 +15,7 @@ module.exports.showCreate = (req, res) => {
     // session:
     let user = req.session.user;
 
-   // console.log(user);
+    // console.log(user);
     if (!user) {
         //没有登录，则调到登录页
         console.log(user);
@@ -54,7 +54,7 @@ module.exports.handleCreate = (req, res) => {
         categoryId: req.body.categoryId,
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
-        userId: 1,
+        userId: req.session.user.id,
     }
     //console.log(newTopic);
 
@@ -91,9 +91,9 @@ module.exports.showTopic = (req, res) => {
             })
         }
 
-   // console.log(results); //数组
+        // console.log(results); //数组
 
-        if(!results[0].content){
+        if (!results[0].content) {
             // 如果conent不存在则 提示没有对应的文章
             return res.send('文章不存在');
         }
@@ -112,34 +112,95 @@ module.exports.showTopic = (req, res) => {
 // 编辑-展示要编辑的文章
 module.exports.showEdit = (req, res) => {
     // res.send('showEdit')
-    res.render('topic/edit.html');
+   // res.render('topic/edit.html');
+    //接收地址栏中的id
+    let topicId = req.query.id;
+    connection.query('select * from topics where id = ?', topicId, (error, topicInfo) => {
+        if (error) {
+            return res.render('error.html', {
+                code: error.code,
+                message: error.message
+            })
+        }
+
+        // 还要查询话题分类 以便修改
+        connection.query('select * from topic_categories', (error, categorys) => {
+            if (error) {
+                return res.render('error.html', {
+                    code: error.code,
+                    message: error.message
+                })
+            }
+            // console.log(topicInfo);
+
+            //把topic 数据和 分类数据添加到对象中 模板对象中
+            res.render('topic/edit.html', {
+                user: req.session.user,
+                topicInfo: topicInfo[0],
+                categorys: categorys
+            })
+
+        })
+
+
+    })
+
 }
+
+
+
+
 
 //重新提交编辑的文章
 
 module.exports.handleEdit = (req, res) => {
-    res.send('handleEdit')
+    res.send('handleEdit');
+
+    //重新提交 更新数据
+    connection.query('update topics set title =?, content =?, categoryId =?, updatedAt = ? where id =? ', [
+        req.body.title, req.body.content, req.body.categoryId, moment().format('YYYY-MM-DD HH:mm:ss'), req.body.topicId
+      ],(error, result) => {
+        if (error) {
+          return res.render('error.html', {
+            code: error.code,
+            message: error.message
+          })
+        }
+    
+        if (!result.affectedRows) {
+          return res.send({
+            code: 10007,
+            message: '更新失败'
+          })
+        }
+        // console.log(result);
+        return res.status(200).send({
+          code: 10008,
+          message: '更新成功'
+        })
+      })
+
 }
 
 
 //删除话题
 
 module.exports.handleDelete = (req, res) => {
-    // res.send('handleDelete');
+
     //接收地址栏中的id
     let topicId = req.query.id;
     //根据sql写删除的sql语句
-    connection.query('delete from topics where id = ?', topicId, (error, result)=>{
+    connection.query('delete from topics where id = ?', topicId, (error, result) => {
         if (error) {
             return res.render('error.html', {
-              code: error.code,
-              message: error.message
+                code: error.code,
+                message: error.message
             })
-          }
-    
-          //删除成功跳转到首页
-            res.redirect('/');
-      
+        }
+
+        //删除成功跳转到首页
+        res.redirect('/');
+
     })
 
 
