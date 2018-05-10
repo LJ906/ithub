@@ -44,20 +44,17 @@ module.exports.showCreate = (req, res) => {
 
 //处理 话题发表页
 module.exports.handleCreate = (req, res) => {
-    // res.send('handleCreate');
-    //获取topic页面提交的新话题数据
-    console.log(req.session.user);
-    // 分类id要改
+    // console.log(req.session.user);
+    // 接收前端传来的提交话题数据，并存到一个对象中 
     let newTopic = {
         title: req.body.title,
-        content: req.body.content,
+        content:  marked(req.body.content),
         categoryId: req.body.categoryId,
         createdAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
-        userId: req.session.user.id,
+        userId: req.session.user.id,  //id可以从session中获取
     }
-    //console.log(newTopic);
-
+    //写sql语句添加到数据库
     connection.query('insert into topics set?', newTopic, (error, results) => {
         if (error) {
             return res.render('error.html', {
@@ -66,13 +63,12 @@ module.exports.handleCreate = (req, res) => {
             })
         }
 
-        console.log(results);
-        if (results.insertId) { //如果insertId存在证明成功了
+        // console.log(results);  //返回成功添加的一个 对象results.insertId
+        if (results.insertId) {  //如果insertId存在证明成功了
             res.send({
                 code: 1006,
                 message: '发表成功',
-                //添加insertid
-                insertId: results.insertId
+                insertId: results.insertId  //把insertid传给前端， 前端根据这个跳转到展示话题页面，显示新发表的话题
             })
         }
     })
@@ -83,7 +79,8 @@ module.exports.handleCreate = (req, res) => {
 // 展示新发表话题页面
 module.exports.showTopic = (req, res) => {
     //链接数据搜索新发布的文章， 根据传过来的id get方式传参接收
-    connection.query('select * from topics where id =?', req.query.id, (error, results) => {
+    // connection.query('select * from topics where id =?', req.query.id, (error, results) => {
+        connection.query('select * from topics ', (error, results) => {
         if (error) {
             return res.render('error.html', {
                 code: error.code,
@@ -91,19 +88,19 @@ module.exports.showTopic = (req, res) => {
             })
         }
 
-        // console.log(results); //数组
+        //console.log(results);   //数组
 
         if (!results[0].content) {
             // 如果conent不存在则 提示没有对应的文章
             return res.send('文章不存在');
         }
 
-        //把markedown格式的文件转成html格式在放回去
-        results[0].content = marked(results[0].content);
+        //把markedown格式的文件转成html格式在放回去//此时content为html标签的格式
+       // results[0].content = marked(results[0].content);
 
         res.render('topic/show.html', {
             user: req.session.user,
-            topic: results[0]
+            topic: results       //html模板需要处理成识别html标签的格式
         });
     })
 
@@ -111,11 +108,10 @@ module.exports.showTopic = (req, res) => {
 
 // 编辑-展示要编辑的文章
 module.exports.showEdit = (req, res) => {
-    // res.send('showEdit')
-   // res.render('topic/edit.html');
+   
     //接收地址栏中的id
     let topicId = req.query.id;
-    connection.query('select * from topics where id = ?', topicId, (error, topicInfo) => {
+    connection.query('select * from topics where id =?', topicId, (error, topicInfo) => {
         if (error) {
             return res.render('error.html', {
                 code: error.code,
@@ -131,8 +127,8 @@ module.exports.showEdit = (req, res) => {
                     message: error.message
                 })
             }
-            // console.log(topicInfo);
-
+          
+            console.log(topicInfo);
             //把topic 数据和 分类数据添加到对象中 模板对象中
             res.render('topic/edit.html', {
                 user: req.session.user,
@@ -152,33 +148,31 @@ module.exports.showEdit = (req, res) => {
 
 
 //重新提交编辑的文章
-
 module.exports.handleEdit = (req, res) => {
-    res.send('handleEdit');
-
+    // res.send('handleEdit');
     //重新提交 更新数据
     connection.query('update topics set title =?, content =?, categoryId =?, updatedAt = ? where id =? ', [
         req.body.title, req.body.content, req.body.categoryId, moment().format('YYYY-MM-DD HH:mm:ss'), req.body.topicId
-      ],(error, result) => {
+    ], (error, result) => {
         if (error) {
-          return res.render('error.html', {
-            code: error.code,
-            message: error.message
-          })
+            return res.render('error.html', {
+                code: error.code,
+                message: error.message
+            })
         }
-    
+
         if (!result.affectedRows) {
-          return res.send({
-            code: 10007,
-            message: '更新失败'
-          })
+            return res.send({
+                code: 10007,
+                message: '更新失败'
+            })
         }
         // console.log(result);
         return res.status(200).send({
-          code: 10008,
-          message: '更新成功'
+            code: 10008,
+            message: '更新成功'
         })
-      })
+    })
 
 }
 
@@ -205,4 +199,6 @@ module.exports.handleDelete = (req, res) => {
 
 
 }
+
+
 

@@ -1,6 +1,4 @@
-//创建新话题页面
-
-
+//重新编辑话题
 $(function () {
     //点击提交按钮， 获取表单中的数据
     $('#editTopic').bootstrapValidator({
@@ -45,7 +43,7 @@ $(function () {
     console.log($form.serialize());
        // console.log(newtopicObj);
         $.ajax({
-            url: '/topic/create',
+            url: '/topic/edit',
             data: $form.serialize(),
             type: 'post',
             //dataType: 'text',
@@ -53,8 +51,9 @@ $(function () {
                 console.log(data);
                 if(data.code ==10008){
                     alert(data.message);
-                    //跳转到侯爷
-                    // location.href = "/topic/show?id="+ data.insertId;
+                    //跳转到列表页
+                   
+                    location.href="/topic/show";
                 }else {
                     alert("更新失败");   //要写吗
                 }

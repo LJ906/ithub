@@ -50,10 +50,10 @@ $(function () {
             type: 'post',
             //dataType: 'text',
             success: function (data) {
-                console.log(data);
+                //console.log(data);
                 if(data.code ==1006){
                     //alert(data.message);
-                    //成功后跳转到 展示文章页面show
+                    //成功后跳转到 展示新话题的页面， 根据insertid（后台给的）
                     location.href = "/topic/show?id="+ data.insertId;
                 }else {
                     alert("提交失败");   //要写吗

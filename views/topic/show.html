@@ -17,18 +17,22 @@
   <section class="container">
     <div class="row">
         <div class="col-md-9">
-            {{ if !topic }}
+            {{ if !topic[0] }}
             <div class="alert alert-danger" role="alert">该话题已不存在！</div>
             {{ else }}
-            <h1>{{ topic.title }}</h1>
-            <p>发布于 31 分钟前 作者 lijin 3 次浏览 来自 客户端测试</p>
+         {{ each topic}}
+
+            <h1>{{ $value.title }}</h1>
+            <p>发布于 31 分钟前 作者 {{$value.userId}} 3 次浏览 来自 客户端测试</p>
             <p>
-              {{ if user && user.id === topic.userId }}
-              <a href="/topic/edit?id={{ topic.id }}">编辑</a>
-              <a id="delete" href="/topic/delete?id={{ topic.id }}">删除</a>
+              {{ if user && user.id === $value.userId }}
+              <a href="/topic/edit?id={{ $value.id }}">编辑</a>
+              <a id="delete" href="/topic/delete?id={{ $value.id }}">删除</a>
               {{ /if }}
             </p>
-            <article class="markdown-body">{{@ topic.content }}</article>
+            <article class="markdown-body">{{@$value.content }}</article>
+           {{/each}}
+           
             {{ /if }}
           </div>
         </div>
