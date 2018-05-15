@@ -9,6 +9,7 @@
 const express = require('express');
 //创建一个路由容器
 const router = express.Router();
+
 //处理响应函数index.js user.js
 let index =require('./controllers/index');
 let user =require('./controllers/user');
