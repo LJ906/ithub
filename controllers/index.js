@@ -1,8 +1,6 @@
 
 //这里面装的是 路由监听各个标识符的回调函数
-
 const connection = require('./db');
-
 
 //首页的
 module.exports.showIndex = (req, res) => {
@@ -17,10 +15,7 @@ module.exports.showIndex = (req, res) => {
             })
         }
 
-
-
         //查询话题表 展示所有的话题数据
-
         connection.query('select * from topics', (err, topics) => {
             if (err) {
                 return res.render('error.html', {
@@ -37,7 +32,7 @@ module.exports.showIndex = (req, res) => {
             // console.log(results); //数组
             res.render('index.html', {
                 user: user,
-                categories: results ,    //渲染首页分类板块
+                categories: results,    //渲染首页分类板块
                 topics: topics     //展示所有话题  数组
             })
 
